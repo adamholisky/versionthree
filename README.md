@@ -53,9 +53,13 @@ Download into /versionthree/tools/original:
   * https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.gz
   * https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz
   * https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.gz 
-  * ftp://ftp.gnu.org/gnu/grub/grub-2.02.tar.gz
+  * http://www.agner.org/optimize/objconv.zip
+  * https://ftp.gnu.org/gnu/grub/grub-2.02.tar.gz
+  * https://download.qemu.org/qemu-4.0.0.tar.xz
 
 Extract to /versionthree/tools/src directory.
+
+Unzip objconv's source.zip into the objconv directory.
 
 Remove versions from all folders in /versionthree/tools/src directory.
 
@@ -65,18 +69,35 @@ Add to ~/.bash_profile:
   * export PATH="/versionthree/tools/bin:$PATH"
 
 cd /versionthree/tools/build
-rm -rf *
+rm -rf /versionthree/tools/build
 ../src/binutils/configure --prefix=/versionthree/tools --target=i686-elf --enable-interwork --enable-multilib --disable-nls --disable-werror && make && make install
 
 cd /versionthree/tools/build
-rm -rf *
+rm -rf /versionthree/tools/build
 ../src/gcc/configure --target=i686-elf --prefix=/versionthree/tools --disable-nls --enable-languages=c --without-headers
 make all-gcc && make all-target-libgcc && make install-gcc && make install-target-libgcc
 
 cd /versionthree/tools/build
-rm -rf *
+rm -rf /versionthree/tools/build
 ../src/nasm/configure --prefix=/versionthree/tools 
 make && make install
+
+cd /versionthree/tools/build
+rm -rf /versionthree/tools/build
+g++ -o objconv -O2 ../src/objconv/source/*.cpp --prefix=/versionthree/tools
+cp objconv /versionthree/tools/bin
+
+cd /versionthree/tools/build
+rm -rf /versionthree/tools/build
+../src/grub/configure --disable-werror TARGET_CC=i386-elf-gcc TARGET_OBJCOPY=i386-elf-objcopy TARGET_STRIP=i386-elf-strip TARGET_NM=i386-elf-nm TARGET_RANLIB=i386-elf-ranlib --target=i386-elf --prefix=/versionthree/tools
+make && make install
+
+cd /versionthree/tools/build
+rm -rf /versionthree/tools/build
+brew install pkg-config 
+brew install glib
+brew install pixman
+../src/qemu/configure --prefix=/versionthree/tools --target-list=i386-softmmu,x86_64-softmmu
 
 
 Components
