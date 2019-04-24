@@ -18,7 +18,8 @@ versionthree.iso:
 	grub-mkrescue -o versionthree.iso iso
 
 run: versionthree.iso
-	qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 4G
+	#qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 4G
+	VBoxManage startvm "V3"
 
 runclean:
 	make clean
