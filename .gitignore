@@ -1,2 +1,6 @@
 /bin
 /tools
+*.o
+/.vscode
+*.iso
+*.bin

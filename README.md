@@ -99,6 +99,9 @@ brew install glib
 brew install pixman
 ../src/qemu/configure --prefix=/versionthree/tools --target-list=i386-softmmu,x86_64-softmmu
 
+cd /versionthree/tools/src/xorriso
+./configure --prefix=/versionthree/tools
+make && make install
 
 Components
 =====
