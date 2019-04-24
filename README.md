@@ -47,8 +47,8 @@ Create directories:
   * /versionthree/tools/src
 
 Download into /versionthree/tools/original:
-  * https://ftp.gnu.org/gnu/gcc/gcc-8.3.0/gcc-8.3.0.tar.gz
   * https://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.gz
+  * https://ftp.gnu.org/gnu/gcc/gcc-8.3.0/gcc-8.3.0.tar.gz
   * https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
   * https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.gz
   * https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz
