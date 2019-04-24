@@ -1,6 +1,8 @@
-/bin
-/tools
+tools/*
+!tools/bin
+tools/bin/*
+!tools/bin/initial_setup.sh
 *.o
-/.vscode
+.vscode
 *.iso
 *.bin
