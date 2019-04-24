@@ -6,3 +6,4 @@ tools/bin/*
 .vscode
 *.iso
 *.bin
+serial_out.txt
