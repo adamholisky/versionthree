@@ -1,10 +1,10 @@
 .DEFAULT_GOAL := runclean
 
 CC = /versionthree/tools/bin/i686-elf-gcc
-CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -nostdlib
+CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc
 
 ASM = /versionthree/tools/bin/i686-elf-as
-AFLAGS = 
+AFLAGS =
 
 export
 
@@ -18,8 +18,7 @@ versionthree.iso:
 	grub-mkrescue -o versionthree.iso iso
 
 run: versionthree.iso
-	#qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 4G
-	VBoxManage startvm "V3"
+	qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 4G
 
 runclean:
 	make clean

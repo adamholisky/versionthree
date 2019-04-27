@@ -66,7 +66,7 @@ Remove versions from all folders in /versionthree/tools/src directory.
 Move MPC, MPFR, GMP folders in to GCC folder
 
 Add to ~/.bash_profile:
-  * export PATH="/versionthree/tools/bin:$PATH"
+  * export PATH=/versionthree/tools/bin:$PATH
 
 cd /versionthree/tools/build
 rm -rf /versionthree/tools/build
@@ -98,6 +98,13 @@ brew install pkg-config
 brew install glib
 brew install pixman
 ../src/qemu/configure --prefix=/versionthree/tools --target-list=i386-softmmu,x86_64-softmmu
+
+QEMU Changes for Mac:
+in ui/cocoa.m
+  * Add: [NSApp activateIgnoringOtherApps:YES]; after the conditional code block for "if fullscreen mode is to be used"
+  * In the verifyQuit function, comment out existing code, replace with: return YES;
+These will force the emulator to the front after it's run as part of the build process, and not show a quit confirmation dialog
+
 
 cd /versionthree/tools/src/xorriso
 ./configure --prefix=/versionthree/tools
