@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := runclean
 
 CC = /versionthree/tools/bin/i686-elf-gcc
-CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc -I../../include
+CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc -I../../include/kernel -I../../include/libc
 
 ASM = /versionthree/tools/bin/i686-elf-as
 AFLAGS =
@@ -12,6 +12,7 @@ all: versionthree.iso
 
 versionthree.iso:
 	$(MAKE) -C src/asm
+	$(MAKE) -C src/libc
 	$(MAKE) -C src/c
 	$(MAKE) -C src/devices
 	$(MAKE) -C src/support

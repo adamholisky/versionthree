@@ -1,4 +1,7 @@
 #include "kernel.h"
+#include "string.h"
+#include "stdio.h"
+#include "bootstrap.h"
 
 /* Setup from bare bones for build config */
  
@@ -9,14 +12,6 @@ size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
- 
-size_t strlen(const char* str) 
-{
-	size_t len = 0;
-	while (str[len])
-		len++;
-	return len;
-}
  
 void terminal_initialize(void) 
 {
@@ -30,6 +25,8 @@ void terminal_initialize(void)
 			terminal_buffer[index] = vga_entry(' ', terminal_color);
 		}
 	}
+
+	init_printf( NULL, putc );
 }
  
 void terminal_setcolor(uint8_t color) 
@@ -62,4 +59,8 @@ void terminal_write(const char* data, size_t size)
 void terminal_writestring(const char* data) 
 {
 	terminal_write(data, strlen(data));
+}
+
+void terminal_clear_last_char( void ) {
+	// TODO
 }
