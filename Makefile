@@ -8,11 +8,14 @@ AFLAGS =
 
 export
 
+#we're leaving libc seperate since it's not changing and is a stop-gap until porting newlib over
+libc:
+	$(MAKE) -C src/libc
+
 all: versionthree.iso
 
 versionthree.iso:
 	$(MAKE) -C src/asm
-	$(MAKE) -C src/libc
 	$(MAKE) -C src/c
 	$(MAKE) -C src/devices
 	$(MAKE) -C src/support
@@ -25,6 +28,9 @@ run: versionthree.iso
 runclean:
 	make clean
 	make run
+
+cleanlibc:
+	rm -f build/libc/*.0
 
 clean:
 	rm -f build/*.o

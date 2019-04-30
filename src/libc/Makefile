@@ -1,10 +1,10 @@
 SOURCES := $(wildcard *.c)
-OBJECTS := $(patsubst %.c, ../../build/%.o, $(SOURCES))
+OBJECTS := $(patsubst %.c, ../../build/libc/%.o, $(SOURCES))
 
-all: $(OBJECTS) ../../build/setjmp.o
+all: $(OBJECTS) ../../build/libc/setjmp.o
 
-../../build/%.o : %.c
+../../build/libc/%.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-../../build/setjmp.o : setjmp.S 
+../../build/libc/setjmp.o : setjmp.S 
 	$(CC) $(CFLAGS) -c $< -o $@
