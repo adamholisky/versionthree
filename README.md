@@ -4,18 +4,18 @@ Version Three of my hobby OS
 Roadmap
 =====
 
-* Build tools on Mac
-* Grub bootload into asm
-* ASM setups kernel to upper half
-* Enter C environment
-* Serial output
+* Build tools on Mac / Windows - DONE
+* Grub bootload into asm - DONE
+* ASM setups kernel to upper half - DONE
+* Enter C environment - DONE
+* Serial output - DONE
   * k_putchar_serial( port, char )
   * k_puts_serial( port, const char *str )
 * Setup Streams
   * stdin <-- Keyboard
   * stdout <-- Terminal
   * stderr <-- Serial
-* Basic output:
+* Basic output: - DONE
   * int k_putc( int char, FILE *stream )
   * int k_putchar( int char )
   * k_puts( const char *str )
