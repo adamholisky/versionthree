@@ -1,7 +1,9 @@
 #if !defined(BOOTSTRAP_INCLUDED)
 #define BOOTSTRAP_INCLUDED
 
-typedef uint32_t FILE;
+#include <stddef.h>
+
+typedef uint32_t * FILE;
 
 #define stdin 0
 #define stdout 1
@@ -10,7 +12,6 @@ typedef uint32_t FILE;
 #define EOF -1
 
 #define puts( s ) fputs( s, stdout )
-#define term_put_char( c ) putchar( c )
 
 void putc( void *p, char c );
 int fputc( int c, FILE * stream );

@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include "string.h"
 
 int fputc( int c, FILE * stream ) {
 	int ret_val = EOF;
@@ -7,7 +8,7 @@ int fputc( int c, FILE * stream ) {
 		serial_write( c );
 		ret_val = c;
 	} else if ( (int)stream == 0x1 ) {
-		terminal_putchar( c );
+		term_put_char( c );
 		ret_val = c;
 	} else if ( (int)stream == 0x2 ) {
 		// N/A
@@ -22,7 +23,7 @@ int fputs( const char * s, FILE * stream ) {
 	int ret_val = EOF;
 
 	for( unsigned int i = 0; i < strlen( s ); i++ ) {
-		(int)stream == 2 ? serial_write( *(s + i) ) : terminal_putchar( *(s + i) );
+		(int)stream == 2 ? serial_write( *(s + i) ) : term_put_char( *(s + i) );
 	}
 
 	return ret_val;

@@ -6,15 +6,13 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-#define byte unsigned char
-#define word unsigned short
-#define dword unsigned int
+#include "bootstrap.h"
+#include "memory.h"
+#include "types.h"
+#include "terminal.h"
+#include "serial.h"
 
 #define kernel_memory_base  0xC0000000
-
-#include "terminal.h"
-#include "bootstrap.h"
-#include "serial.h"
 
 /* Outputs a byte to the specified hardware port */
 static inline void outportb( uint32_t port, uint8_t value)

@@ -3,12 +3,11 @@
  
 void kernel_main(void) 
 {
-	/* Initialize terminal interface */
-	terminal_initialize();
+	term_initalize();
 	initalize_serial();
+    memory_initalize();
  
-	/* Newline support is left as an exercise. */
-	printf( "Hello, %s world!", "printf()" );
+	printf( "Welcome to Version 3\n\nNow with multiple lines... oooh!" );
 	
-	fputs( "And hello serial world...", stderr );
+	fputs( "Ending now", stderr );
 }

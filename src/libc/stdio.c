@@ -348,7 +348,7 @@ void get_string( char * string, unsigned int size ) {
 					break;
 				case '\b':
 					if( x > 0 ) {
-						terminal_clear_last_char();
+						term_clear_last_char();
 						string[ x ] = '\0';
 						x--;
 					}

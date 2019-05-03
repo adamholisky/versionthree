@@ -6,6 +6,11 @@ CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc -I../..
 ASM = /versionthree/tools/bin/i686-elf-as
 AFLAGS =
 
+# This will get things working on VSCode and WSL, but should leave other *nixs alone
+ifndef DISPLAY
+DISPLAY=:0
+endif
+
 export
 
 #we're leaving libc seperate since it's not changing and is a stop-gap until porting newlib over
@@ -30,7 +35,7 @@ runclean:
 	make run
 
 cleanlibc:
-	rm -f build/libc/*.0
+	rm -f build/libc/*.o
 
 clean:
 	rm -f build/*.o

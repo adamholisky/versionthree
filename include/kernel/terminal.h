@@ -20,22 +20,32 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
-static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) 
-{
+typedef struct {
+    uint32_t	current_row;
+    uint32_t	current_column;
+    uint32_t	foreground_color;
+    uint32_t	background_color;
+} term;
+
+void term_initalize( void );
+void term_print_color( void );
+void term_set_color( uint32_t foreground, uint32_t background );
+void term_put_char( char c );
+void term_put_char_at( char c, unsigned char color, unsigned int x, unsigned int y );
+void term_clear_last_char( void );
+void term_put_string( const char* data, size_t size );
+void term_write_string( const char* data );
+bool is_gui_active( void );
+void set_debug_output( bool d );
+void write_serial(char a);
+void write_to_serial_port( char c );
+
+static inline unsigned char vga_entry_color( enum vga_color fg, enum vga_color bg ) {
 	return fg | bg << 4;
 }
  
-static inline uint16_t vga_entry(unsigned char uc, uint8_t color) 
-{
-	return (uint16_t) uc | (uint16_t) color << 8;
+static inline unsigned int vga_entry( unsigned char uc, unsigned char color ) {
+	return (unsigned int) uc | (unsigned int) color << 8;
 }
-
-void terminal_initialize(void);
-void terminal_setcolor(uint8_t color);
-void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
-void terminal_putchar(char c);
-void terminal_write(const char* data, size_t size);
-void terminal_writestring(const char* data);
-void terminal_clear_last_char( void );
 
 #endif

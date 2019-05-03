@@ -1,66 +1,120 @@
 #include "kernel.h"
-#include "string.h"
 #include "stdio.h"
-#include "bootstrap.h"
+#include "string.h"
 
-/* Setup from bare bones for build config */
- 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
- 
-size_t terminal_row;
-size_t terminal_column;
-uint8_t terminal_color;
-uint16_t* terminal_buffer;
- 
-void terminal_initialize(void) 
-{
-	terminal_row = 0;
-	terminal_column = 0;
-	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
-	terminal_buffer = (uint16_t*) 0xC00B8000;
-	for (size_t y = 0; y < VGA_HEIGHT; y++) {
-		for (size_t x = 0; x < VGA_WIDTH; x++) {
-			const size_t index = y * VGA_WIDTH + x;
-			terminal_buffer[index] = vga_entry(' ', terminal_color);
+unsigned int term_current_row;
+unsigned int term_current_column;
+unsigned char term_current_color;
+unsigned short * term_buffer;
+
+unsigned int VGA_WIDTH = 80;
+unsigned int VGA_HEIGHT = 25;
+unsigned int y_start;
+
+bool is_debug_output = false;
+
+void term_initalize( void ) {
+	unsigned int x = 0;
+	unsigned int y = 0;
+
+	term_current_row = 0;
+	term_current_column = 0;
+	y_start = 0;
+	term_current_color = vga_entry_color( VGA_COLOR_WHITE, VGA_COLOR_BLUE );
+	term_buffer = ( unsigned short * )( 0xC00B8000 );
+
+	for( y = 0; y < VGA_HEIGHT; y++ ) {
+		for( x = 0; x < VGA_WIDTH; x++ ) {
+			term_buffer[( y * VGA_WIDTH ) + x] = vga_entry( ' ', term_current_color );
+		}
+	}
+	init_printf( NULL, putc );
+}
+
+void term_put_char_at( char c, unsigned char color, unsigned int x, unsigned int y ) {
+	color = 0;
+
+	if( c != '\n' ) {
+		term_buffer[( y * VGA_WIDTH ) + x] = vga_entry( c, term_current_color );
+	}
+}
+
+void term_put_char( char c ) {
+	unsigned int x;
+	unsigned int y;
+	unsigned int max_row;
+
+	if( is_debug_output == true ) {
+		serial_write( c );
+
+		return;
+	}
+
+	if( c != '\n' ) {
+		term_put_char_at( c, term_current_color, term_current_column, term_current_row );
+	} else {
+		term_current_column = VGA_WIDTH - 1;
+	}
+
+	term_current_column++;
+
+	if( term_current_column == VGA_WIDTH ) {
+		term_current_column = 0;
+
+		term_current_row++;
+
+		max_row = VGA_HEIGHT;
+
+		if( term_current_row == max_row ) {
+			term_current_row = max_row - 1;
+
+			for( y = y_start; y < max_row - 1; y++ ) {
+				for( x = 0; x < VGA_WIDTH; x++ ) {
+					term_buffer[( y * VGA_WIDTH ) + x] = term_buffer[( ( y + 1 ) * VGA_WIDTH ) + x];
+				}
+			}
+
+			for( x = 0; x < VGA_WIDTH; x++ ) {
+				const size_t index = ( VGA_HEIGHT - 1 ) * VGA_WIDTH + x;
+				term_buffer[index] = vga_entry( ' ', term_current_color );
+			}
 		}
 	}
 
-	init_printf( NULL, putc );
-}
- 
-void terminal_setcolor(uint8_t color) 
-{
-	terminal_color = color;
-}
- 
-void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) 
-{
-	const size_t index = y * VGA_WIDTH + x;
-	terminal_buffer[index] = vga_entry(c, color);
-}
- 
-void terminal_putchar(char c) 
-{
-	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-	if (++terminal_column == VGA_WIDTH) {
-		terminal_column = 0;
-		if (++terminal_row == VGA_HEIGHT)
-			terminal_row = 0;
-	}
-}
- 
-void terminal_write(const char* data, size_t size) 
-{
-	for (size_t i = 0; i < size; i++)
-		terminal_putchar(data[i]);
-}
- 
-void terminal_writestring(const char* data) 
-{
-	terminal_write(data, strlen(data));
+	//update_cursor( term_current_row, term_current_column );
 }
 
-void terminal_clear_last_char( void ) {
-	// TODO
+void term_clear_last_char( void ) {
+	int term_new_column = term_current_column - 1;
+
+	//printf( "cc: %d --> nc: %d", term_current_column, term_new_column );
+	if( term_new_column > 0 ) {
+		term_put_char_at( ' ', term_current_color, term_new_column, term_current_row );
+
+		term_current_column = term_new_column;
+	}
+
+	//update_cursor( term_current_row, term_current_column );
+}
+
+/* Outputs a string data of size the terminal
+ */
+void term_put_string( const char * data, size_t size ) {
+	for( size_t i = 0; i < size; i++ ) {
+		term_put_char( data[i] );
+	}
+}
+
+/* Calculates the size of *data and outputs the string *data
+ */
+void term_write_string( const char * data ) {
+	term_put_string( data, strlen( data ) );
+}
+
+void set_debug_output( bool d ) {
+	is_debug_output = d;
+}
+
+void write_to_serial_port( char c ) {
+	serial_write( c );
 }
