@@ -9,6 +9,7 @@
 	.long MAGIC
 	.long FLAGS
 	.long CHECKSUM
+    .skip 4096
  
 .section .bootstrap_stack, "aw", @nobits
 	.align 16
@@ -65,6 +66,9 @@ stage3:
 
 	mov  $stack_top, %esp							/* Setup the stack */
 	
+    addl $0xC0000000, %ebx
+    push %ebx
+    push %eax
 	call kernel_main								/* Begin */
 
 	hlt

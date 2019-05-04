@@ -13,6 +13,8 @@ typedef uint32_t * FILE;
 
 #define puts( s ) fputs( s, stdout )
 
+#define panic( ) do{ ; } while( true )
+
 void putc( void *p, char c );
 int fputc( int c, FILE * stream );
 int fputs( const char * s, FILE * stream );

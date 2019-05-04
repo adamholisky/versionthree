@@ -11,8 +11,11 @@
 #include "types.h"
 #include "terminal.h"
 #include "serial.h"
+#include "multiboot.h"
 
 #define kernel_memory_base  0xC0000000
+
+void kernel_main( uint32_t multiboot_magic, multiboot_info_t * multiboot_info );
 
 /* Outputs a byte to the specified hardware port */
 static inline void outportb( uint32_t port, uint8_t value)
@@ -35,6 +38,7 @@ static inline uint8_t inportb( uint32_t port)
 }
 
 #define bit_is_set( variable, position ) ( ((variable) >> (position)) & 1 )
+#define CHECK_FLAG(flags,bit) ((flags) & (1 << (bit)))
 #define bit_set( variable, position ) ( (variable) | (1 << (position)) )
 #define bit_clear( variable, position ) ( (variable) & ~(1 << (position)) )
 #define bit_flip( variable, position ) ( (variable) ^ (1 << (position)) )
