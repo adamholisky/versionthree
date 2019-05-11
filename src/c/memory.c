@@ -4,10 +4,12 @@
 
 void * k_malloc_head;
 uint32_t next_free_frame;
+int test_has_hit_reserved;
 
 void memory_initalize( void ) {
 	k_malloc_head = ( void * )( 0xCB000000 );
 	next_free_frame = 1;
+	test_has_hit_reserved = 0;
 }
 
 void * k_malloc( uint32_t size ) {
@@ -21,20 +23,32 @@ void * k_malloc( uint32_t size ) {
 void memory_test( void ) {
 	void * test_var = ( void * )( 0x00000001 );
 
-	printf( "k_malloc_head:    0x%04X %04X\n", ( ( uint32_t )( k_malloc_head ) >> 16 ), ( uint32_t )( k_malloc_head )&0xFFFF );
-	printf( "test_var:         0x%04X %04X\n", ( ( uint32_t )( test_var ) >> 16 ), ( uint32_t )( test_var )&0xFFFF );
-	printf( "Allocating:       0x000A\n" );
+	debug_f( "k_malloc_head:    0x%04X %04X\n", ( ( uint32_t )( k_malloc_head ) >> 16 ), ( uint32_t )( k_malloc_head )&0xFFFF );
+	debug_f( "test_var:         0x%04X %04X\n", ( ( uint32_t )( test_var ) >> 16 ), ( uint32_t )( test_var )&0xFFFF );
+	debug_f( "Allocating:       0x000A\n" );
 	test_var = k_malloc( 0xA );
-	printf( "test_var:         0x%04X %04X\n", ( ( uint32_t )( test_var ) >> 16 ), ( uint32_t )( test_var )&0xFFFF );
-	printf( "k_malloc_head:    0x%04X %04X\n", ( ( uint32_t )( k_malloc_head ) >> 16 ), ( uint32_t )( k_malloc_head )&0xFFFF );
+	debug_f( "test_var:         0x%04X %04X\n", ( ( uint32_t )( test_var ) >> 16 ), ( uint32_t )( test_var )&0xFFFF );
+	debug_f( "k_malloc_head:    0x%04X %04X\n", ( ( uint32_t )( k_malloc_head ) >> 16 ), ( uint32_t )( k_malloc_head )&0xFFFF );
 
-	uint32_t new_frame = allocate_frame( );    
-	uint32_t new_frame_addr = mmap_read( new_frame, MMAP_GET_ADDR );
-	printf( "new_frame:       0x%04X %04X\n", ( ( uint32_t )( new_frame_addr ) >> 16 ), ( uint32_t )( new_frame_addr )&0xFFFF );
-    
-    new_frame = allocate_frame( );    
-	new_frame_addr = mmap_read( new_frame, MMAP_GET_ADDR );
-	printf( "new_frame:       0x%04X %04X\n", ( ( uint32_t )( new_frame_addr ) >> 16 ), ( uint32_t )( new_frame_addr )&0xFFFF );
+	#ifdef RUN_RESERVED_MEM_TEST
+		debug_f( "Running reserved test...\n" );
+		debug_f( "Allocating 162 4kb frames\n" );
+		int show_addr = 0;
+		for( int i = 0; i < 163; i++ ) {
+			uint32_t frame = allocate_frame();
+
+			if( test_has_hit_reserved == 1 ) {
+				debug_f( "reserve hit on: %d\n", i );
+				show_addr = 1;
+			}
+
+			if( show_addr ) {
+				void * new_frame_addr = mmap_read( frame, MMAP_GET_ADDR );
+
+				debug_f( "new_frame_addr:       0x%04X %04X\n", ( ( uint32_t )( new_frame_addr ) >> 16 ), ( uint32_t )( new_frame_addr )&0xFFFF );
+			}
+		}
+	#endif
 }
 
 uint32_t mmap_read( uint32_t request, uint8_t mode ) {
@@ -56,7 +70,7 @@ uint32_t mmap_read( uint32_t request, uint8_t mode ) {
 	uintptr_t cur_mmap_addr = ( uintptr_t )(verified_mboot_hdr->mmap_addr + kernel_memory_base);
 	uintptr_t mmap_end_addr = cur_mmap_addr + verified_mboot_hdr->mmap_length;
 
-   //  printf( "%08x\n", cur_mmap_addr );
+    //printf( "%08x\n", cur_mmap_addr );
      // printf( "%08x\n", mmap_end_addr );
 
     
@@ -69,7 +83,7 @@ uint32_t mmap_read( uint32_t request, uint8_t mode ) {
 		// internal frame number counter
 		uint64_t i;
 		uint64_t current_entry_end = current_entry->addr + current_entry->len;
-         printf( "cea %08x\n", current_entry->addr );
+        // printf( "cea %08x\n", current_entry );
 		for( i = current_entry->addr; i + PAGE_SIZE < current_entry_end; i += PAGE_SIZE ) {
 			if( mode == MMAP_GET_NUM && request >= i && request <= i + PAGE_SIZE ) {
 				// If we're looking for a frame number from an address and we found it
@@ -82,6 +96,8 @@ uint32_t mmap_read( uint32_t request, uint8_t mode ) {
 				if( mode == MMAP_GET_ADDR && cur_num == request ) {
 					// The address of a chunk in reserved space was requested
 					// Increment the request until it is no longer reserved
+					printf( "%d: 0x%x  ", current_entry->type, current_entry->addr );
+					test_has_hit_reserved = 1;
 					++request;
 				}
 				// Skip to the next chunk until it's no longer reserved
@@ -105,6 +121,10 @@ uint32_t mmap_read( uint32_t request, uint8_t mode ) {
 uint32_t allocate_frame( void ) {
 	uint32_t multiboot_reserved_start = multiboot_get_start( );
 	uint32_t multiboot_reserved_end = multiboot_get_end( );
+
+	test_has_hit_reserved = 0;
+	//printf( "rs: %08X\n", multiboot_reserved_start );
+	//printf( "re: %08X\n", multiboot_reserved_end );
 
 	// Get the address for the next free frame
 	uint32_t cur_addr = mmap_read( next_free_frame, MMAP_GET_ADDR );

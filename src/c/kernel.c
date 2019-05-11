@@ -8,9 +8,10 @@ void kernel_main( uint32_t multiboot_magic, multiboot_info_t * multiboot_info ) 
 	memory_initalize( );
 
 	printf( "Welcome to Version 3.\n" );
+	debug_f( "Welcome to Version 3 Serial Out!\n" );
 
     multiboot_test();
     memory_test();
     
-	fputs( "Ending now", stderr );
+	debug_f( "Ending now\n" );
 }

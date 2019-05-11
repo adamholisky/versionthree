@@ -43,3 +43,4 @@ void putc( void *p, char c ) {
 
 	putchar( c );
 }
+

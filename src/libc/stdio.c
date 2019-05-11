@@ -581,12 +581,12 @@ static char a2i(char ch, char** src,int base,int* nump)
 }
 
 void debug_f( char *fmt, ...) {
-	//set_debug_output( true );
+	set_debug_output( true );
 	va_list va;
 	va_start(va,fmt);
 	tfp_format(stdout_putp,stdout_putf,fmt,va);
 	va_end(va);
-	//set_debug_output( false );
+	set_debug_output( false );
 }
 
 unsigned long hex2int(char *a, unsigned int len)

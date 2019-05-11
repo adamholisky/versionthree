@@ -28,7 +28,7 @@ versionthree.iso:
 	grub-mkrescue -o versionthree.iso iso
 
 run: versionthree.iso
-	qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 5G
+	qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 4G -nic user,ipv6=off,model=e1000,mac=52:54:98:76:54:32 -usb
 
 runclean:
 	make clean

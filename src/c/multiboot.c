@@ -26,24 +26,38 @@ uint32_t multiboot_get_end( void ) {
 }
 
 void multiboot_test( void ) {
+	multiboot_memory_map_t *mmap;
 
 	if( mb_magic != MULTIBOOT_BOOTLOADER_MAGIC ) {
-		printf( "[Multiboot] mb_magic is wrong: 0x%08x\n", mb_magic );
-		printf( "[Multiboot] mbinfo header: 0x%08X\n", multiboot_header );
+		debug_f( "[Multiboot] mb_magic is wrong: 0x%08x\n", mb_magic );
+		debug_f( "[Multiboot] mbinfo header: 0x%08X\n", multiboot_header );
 		panic( );
 	}
 
-    printf( "[Multiboot] mb_boot_magic:    0x%08x\n", mb_magic );
-    printf( "[Multiboot] mb_info:          0x%08x\n", multiboot_header );
-    printf( "[Multiboot] mb_bl_name:       '%s'\n", (multiboot_header->boot_loader_name) + 0xC0000000 );
-    printf( "[Multiboot] mb_flags:         0x%08x\n", multiboot_header->flags );
-    printf( "[Multiboot] mem_lower:        0x%08x\n", multiboot_header->mem_lower );
-    printf( "[Multiboot] mem_upper:        0x%08x\n", multiboot_header->mem_upper );
+    debug_f( "[Multiboot] mb_boot_magic:    0x%08x\n", mb_magic );
+    debug_f( "[Multiboot] mb_info:          0x%08x\n", multiboot_header );
+    debug_f( "[Multiboot] mb_bl_name:       '%s'\n", (multiboot_header->boot_loader_name) + 0xC0000000 );
+    debug_f( "[Multiboot] mb_flags:         0x%08x\n", multiboot_header->flags );
+	debug_f( "[Multiboot] mmap_length       %d\n", multiboot_header->mmap_length );
+	debug_f( "[Multiboot] mmap_addr         0x%08x\n", multiboot_header->mmap_addr );
 
-	if( ! CHECK_FLAG( multiboot_header->flags, 6 ) ) {
-		printf( "Error: No Multiboot memory map was provided!\n" );
-		panic( );
+	debug_f( "---Begin memory map---\n" );
+	for (mmap = (multiboot_memory_map_t *) (multiboot_header->mmap_addr + kernel_memory_base);
+                (unsigned long) mmap < (multiboot_header->mmap_addr + kernel_memory_base) + multiboot_header->mmap_length;
+                mmap = (multiboot_memory_map_t *) ((unsigned long) mmap
+                                         + mmap->size + sizeof (mmap->size))) 
+	{
+             debug_f (" size = 0x%x, base_addr = 0x%x:%08x,"
+                     " length = 0x%x:%08x, type = 0x%x\n",
+                     (unsigned) mmap->size,
+                     (unsigned) (mmap->addr >> 32),
+                     (unsigned) (mmap->addr & 0xffffffff),
+                     (unsigned) (mmap->len >> 32),
+                     (unsigned) (mmap->len & 0xffffffff),
+                     (unsigned) mmap->type);
 	}
 
-	printf( "[Multiboot] Pass\n" );
+	debug_f( "---End memory map---\n" );
+
+	debug_f( "[Multiboot] Pass\n" );
 }
