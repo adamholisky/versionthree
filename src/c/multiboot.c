@@ -38,6 +38,8 @@ void multiboot_test( void ) {
     debug_f( "[Multiboot] mb_info:          0x%08x\n", multiboot_header );
     debug_f( "[Multiboot] mb_bl_name:       '%s'\n", (multiboot_header->boot_loader_name) + 0xC0000000 );
     debug_f( "[Multiboot] mb_flags:         0x%08x\n", multiboot_header->flags );
+	debug_f( "[Multiboot] mem_upper:        0x%08x\n", multiboot_header->mem_upper );
+	debug_f( "[Multiboot] mem_lower:        0x%08x\n", multiboot_header->mem_lower );
 	debug_f( "[Multiboot] mmap_length       %d\n", multiboot_header->mmap_length );
 	debug_f( "[Multiboot] mmap_addr         0x%08x\n", multiboot_header->mmap_addr );
 

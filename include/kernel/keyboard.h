@@ -3,5 +3,6 @@
 
 char get_character( unsigned int scan_code );
 char get_scancode( void );
+void keyboard_interrupt_handler( void );
 
 #endif

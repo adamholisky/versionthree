@@ -25,10 +25,55 @@
 	.skip 4096
  
 
-.section .text
+.section .data
+	.align 0x1000
+
+GDTR:
+    .word GDT_END - GDT - 1
+    .long GDT
+
+GDT:
+NULL_SEL:              
+      .long 0x0
+      .long 0x0
+CODESEL:           
+      .word     0xFFFF                 
+      .word      0x0                    
+      .byte     0x0                    
+      .byte     0x9A                  
+      .byte     0xCF                   
+      .byte    0x0              
+DATASEL:      
+      .word     0xFFFF                
+      .word     0x0                   
+      .byte     0x0                    
+      .byte     0x92                  
+      .byte     0xCF              
+      .byte     0x0               
+CODEUSER:   
+      .word     0xFFFF               
+      .word     0x0                
+      .byte     0x0                 
+      .byte     0xFA                
+      .byte     0xCF              
+      .byte     0x0             
+DATAUSER:   
+      .word     0xFFFF              
+      .word     0x0           
+      .byte     0x0             
+      .byte     0xF2                 
+      .byte     0xCF                
+      .byte     0x0    
+TSS:
+      .long     0x0
+      .long    0x0
+GDT_END:
+ 
+
 .global _start
 .type _start, @function
 _start:
+	cli
 	movl $(boot_page_table - 0xC0000000), %edi		/* EDI gets the physical page table  address */
 	movl $0, %esi									/* 0 == first address mapped */
 	movl $1024, %ecx								/* Map our pages */
@@ -48,6 +93,8 @@ stage2:
 	/* Setup physical 0 and 0xC0000000 to be present, writable so when we load CR3 we don't error out */
 	movl $(boot_page_table - 0xC0000000 + 0x003), boot_page_directory - 0xC0000000
 	movl $(boot_page_table - 0xC0000000 + 0x003), boot_page_directory - 0xC0000000 + 768 * 4
+	movl $(boot_page_table - 0xC0000000 + 0x003), boot_page_directory - 0xC0000000 + 769 * 4
+	movl $(boot_page_table - 0xC0000000 + 0x003), boot_page_directory - 0xC0000000 + 770 * 4
 
 	movl $(boot_page_directory - 0xC0000000), %ecx	/* Correct for linker 0xC0000000 offset */
 	movl %ecx, %cr3
@@ -66,7 +113,21 @@ stage3:
 
 	mov  $stack_top, %esp							/* Setup the stack */
 	
-    addl $0xC0000000, %ebx
+	lgdt GDTR
+	
+	push %eax
+	mov $0x10, %ax
+	mov %ax, %ds
+	mov %ax, %gs
+	mov %ax, %fs
+	mov %ax, %es
+	mov %ax, %ss
+
+	pop %eax
+	
+	jmp $0x08, $stage4
+stage4:
+	addl $0xC0000000, %ebx
     push %ebx
     push %eax
 	call kernel_main								/* Begin */

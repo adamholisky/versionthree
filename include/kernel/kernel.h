@@ -7,6 +7,7 @@
 #include <stdarg.h>
 
 #include "bootstrap.h"
+#include "interrupt.h"
 #include "memory.h"
 #include "types.h"
 #include "terminal.h"

@@ -1,10 +1,14 @@
 .DEFAULT_GOAL := runclean
 
-CC = /versionthree/tools/bin/i686-elf-gcc
-CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc -I../../include/kernel -I../../include/libc
+CC = /Users/adam/versionthree/tools/bin/i686-elf-gcc
+CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc -I../../include/kernel -I../../include/libc -g
 
-ASM = /versionthree/tools/bin/i686-elf-as
+ASM = /Users/adam/versionthree/tools/bin/i686-elf-as
 AFLAGS =
+
+#GRUB_RESCUE = /Users/adam/versionthree/tools/bin/grub-mkrescue
+GRUB_RESCUE = /usr/local/Cellar/i386-elf-grub/2.04/bin/i386-elf-grub-mkrescue
+EMU = /Users/adam/versionthree/tools/bin/qemu-system-i386
 
 # This will get things working on VSCode and WSL, but should leave other *nixs alone
 ifndef DISPLAY
@@ -25,10 +29,14 @@ versionthree.iso:
 	$(MAKE) -C src/devices
 	$(MAKE) -C src/support
 	cp -f build/versionthree.bin iso/boot/versionthree.bin
-	grub-mkrescue -o versionthree.iso iso
+	$(GRUB_RESCUE) --xorriso=/Users/adam/versionthree/tools/bin/xorriso -o versionthree.iso iso
 
 run: versionthree.iso
-	qemu-system-i386 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -cdrom versionthree.iso -serial stdio -serial file:serial_out.txt -m 4G -nic user,ipv6=off,model=e1000,mac=52:54:98:76:54:32 -usb
+	$(EMU) -d cpu_reset -device isa-debug-exit,iobase=0xf4,iosize=0x04 -serial stdio -serial file:serial_out.txt -m 4G -cdrom /Users/adam/versionthree/versionthree.iso
+
+run-debug: versionthree.iso
+	nohup $(EMU) -device isa-debug-exit,iobase=0xf4,iosize=0x04 -serial stdio -serial file:serial_out.txt -m 4G -cdrom /Users/adam/versionthree/versionthree.iso -S -s
+	wait 2
 
 runclean:
 	make clean

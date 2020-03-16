@@ -89,7 +89,7 @@ cp objconv /versionthree/tools/bin
 
 cd /versionthree/tools/build
 rm -rf /versionthree/tools/build
-../src/grub/configure --disable-werror TARGET_CC=i386-elf-gcc TARGET_OBJCOPY=i386-elf-objcopy TARGET_STRIP=i386-elf-strip TARGET_NM=i386-elf-nm TARGET_RANLIB=i386-elf-ranlib --target=i386-elf --prefix=/versionthree/tools
+../src/grub/configure --disable-werror TARGET_CC=i386-elf-gcc TARGET_OBJCOPY=i386-elf-objcopy TARGET_STRIP=i386-elf-strip TARGET_NM=i386-elf-nm TARGET_RANLIB=i386-elf-ranlib --target=i386-elf --prefix=/Users/adam/versionthree/tools
 make && make install
 
 cd /versionthree/tools/build
