@@ -109,10 +109,10 @@ void keyboard_interrupt_handler( void ) {
 
 char get_character( unsigned int scan_code ) {
 	if( is_shift ) {
-		return keyboard_map_shift[ scancode ];
+		return keyboard_map_shift[ scan_code ];
 	}
 
-	return keyboard_map[ scancode ];}
+	return keyboard_map[ scan_code ];}
 
 char get_scancode( void ) {
 	return 'b';

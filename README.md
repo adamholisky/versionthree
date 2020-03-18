@@ -66,38 +66,38 @@ Remove versions from all folders in /versionthree/tools/src directory.
 Move MPC, MPFR, GMP folders in to GCC folder
 
 Add to ~/.bash_profile:
-  * export PATH=/versionthree/tools/bin:$PATH
+  * export PATH=/usr/local/versionthree/tools/bin:$PATH
 
-cd /versionthree/tools/build
-rm -rf /versionthree/tools/build
-../src/binutils/configure --prefix=/versionthree/tools --target=i686-elf --enable-interwork --enable-multilib --disable-nls --disable-werror && make && make install
+cd /usr/local/versionthree/tools/build
+rm -rf /usr/local/versionthree/tools/build
+../src/binutils/configure --prefix=/usr/local/versionthree/tools --target=i686-elf --enable-interwork --enable-multilib --disable-nls --disable-werror && make && make install
 
-cd /versionthree/tools/build
-rm -rf /versionthree/tools/build
-../src/gcc/configure --target=i686-elf --prefix=/versionthree/tools --disable-nls --enable-languages=c --without-headers
+cd /usr/local/versionthree/tools/build
+rm -rf /usr/local/versionthree/tools/build
+../src/gcc/configure --target=i686-elf --prefix=/usr/local/versionthree/tools --disable-nls --enable-languages=c --without-headers
 make all-gcc && make all-target-libgcc && make install-gcc && make install-target-libgcc
 
-cd /versionthree/tools/build
-rm -rf /versionthree/tools/build
-../src/nasm/configure --prefix=/versionthree/tools 
+cd /usr/local/versionthree/tools/build
+rm -rf /usr/local/versionthree/tools/build
+../src/nasm/configure --prefix=/usr/local/versionthree/tools 
 make && make install
 
-cd /versionthree/tools/build
-rm -rf /versionthree/tools/build
-g++ -o objconv -O2 ../src/objconv/source/*.cpp --prefix=/versionthree/tools
-cp objconv /versionthree/tools/bin
+cd /usr/local/versionthree/tools/build
+rm -rf /usr/local/versionthree/tools/build
+g++ -o objconv -O2 ../src/objconv/source/*.cpp --prefix=/usr/local/versionthree/tools
+cp objconv /usr/local/versionthree/tools/bin
 
-cd /versionthree/tools/build
-rm -rf /versionthree/tools/build
-../src/grub/configure --disable-werror TARGET_CC=i386-elf-gcc TARGET_OBJCOPY=i386-elf-objcopy TARGET_STRIP=i386-elf-strip TARGET_NM=i386-elf-nm TARGET_RANLIB=i386-elf-ranlib --target=i386-elf --prefix=/Users/adam/versionthree/tools
+cd /usr/local/versionthree/tools/build
+rm -rf /usr/local/versionthree/tools/build
+../src/grub/configure --disable-werror TARGET_CC=i386-elf-gcc TARGET_OBJCOPY=i386-elf-objcopy TARGET_STRIP=i386-elf-strip TARGET_NM=i386-elf-nm TARGET_RANLIB=i386-elf-ranlib --target=i386-elf --prefix=/usr/local/versionthree/tools
 make && make install
 
-cd /versionthree/tools/build
-rm -rf /versionthree/tools/build
+cd /usr/local/versionthree/tools/build
+rm -rf /usr/local/versionthree/tools/build
 brew install pkg-config 
 brew install glib
 brew install pixman
-../src/qemu/configure --prefix=/versionthree/tools --target-list=i386-softmmu,x86_64-softmmu
+../src/qemu/configure --prefix=/usr/local/versionthree/tools --target-list=i386-softmmu,x86_64-softmmu
 
 QEMU Changes for Mac:
 in ui/cocoa.m
@@ -106,8 +106,8 @@ in ui/cocoa.m
 These will force the emulator to the front after it's run as part of the build process, and not show a quit confirmation dialog
 
 
-cd /versionthree/tools/src/xorriso
-./configure --prefix=/versionthree/tools
+cd /usr/local/versionthree/tools/src/xorriso
+./configure --prefix=/usr/local/versionthree/tools
 make && make install
 
 Components
