@@ -6,7 +6,7 @@ CFLAGS = -ffreestanding -O2 -Wall -Wextra -nostdlib -static-libgcc -lgcc -I../..
 ASM = /usr/local/versionthree/tools/bin/i686-elf-as
 AFLAGS =
 
-GRUB_RESCUE = /usr/local/versionthree/tools/bin/grub-mkrescue
+GRUB_RESCUE = grub-mkrescue
 EMU = qemu-system-x86_64
 
 # This will get things working on VSCode and WSL, but should leave other *nixs alone
